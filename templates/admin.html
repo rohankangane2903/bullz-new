@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Command Center - Bullz{% endblock %}
+
+{% block content %}
+<div class="adm-wrap">
+  <!-- Admin Header -->
+  <div class="adm-head">
+    <div class="adm-title">
+      <img src="/static/assets/bullz-logo-128.png" alt="Bullz">
+      <div>
+        <h2>Admin Command Center</h2>
+        <p>MongoDB Portfolio Management, Compound Ledger Engine &amp; Rate Controls</p>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-green-pill" style="font-size:13px; padding:8px 18px;" onclick="openCreateClientModal()">+ Onboard New Client</button>
+      <button class="btn-dashboard-logout" style="font-size:13px; padding:8px 16px;" onclick="logout()">Exit</button>
+    </div>
+  </div>
+
+  <!-- KPI Grid -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <em>💼</em>
+      <b id="adminKpiAum">₹0</b>
+      <span>Total Portfolio AUM</span>
+    </div>
+    <div class="kpi">
+      <em>👥</em>
+      <b id="adminKpiClients">0</b>
+      <span>Active Clients</span>
+    </div>
+    <div class="kpi">
+      <em>💸</em>
+      <b id="adminKpiPayout">₹0</b>
+      <span>Monthly Disbursal</span>
+    </div>
+    <div class="kpi">
+      <em>📊</em>
+      <b id="adminKpiInvs">0</b>
+      <span>Active Contracts</span>
+    </div>
+  </div>
+
+  <!-- Tabs Nav -->
+  <div class="adm-tabs">
+    <button class="adm-tab on" id="tabBtn_clients" onclick="switchAdminTab('clients')">👥 Clients Directory</button>
+    <button class="adm-tab" id="tabBtn_ledger" onclick="switchAdminTab('ledger')">📊 Monthly Compound Ledger</button>
+    <button class="adm-tab" id="tabBtn_investments" onclick="switchAdminTab('investments')">📈 Rates &amp; Investments</button>
+  </div>
+
+  <!-- ==================== TAB 1: CLIENTS DIRECTORY ==================== -->
+  <div class="adm-panel on" id="panel_clients">
+    <div class="toolbar">
+      <input type="text" id="clientSearchInput" class="search-input" placeholder="🔍 Search client by name or email..." oninput="filterClients()">
+      <button class="btn-white-pill" onclick="loadAdminDashboard()">🔄 Refresh</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="adm-table">
+        <thead>
+          <tr>
+            <th>Client Name &amp; Email</th>
+            <th>Total Balance</th>
+            <th>Monthly Rate</th>
+            <th>Monthly Payout</th>
+            <th>Start Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminClientsTbody">
+          <tr>
+            <td colspan="6" class="adm-empty">Loading clients from database...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 2: MONTHLY COMPOUND LEDGER ==================== -->
+  <div class="adm-panel" id="panel_ledger">
+    <div class="toolbar">
+      <label style="font-weight:700; color:var(--mint); align-self:center;">Select Client:</label>
+      <select id="adminLedgerClientSelect" class="calc-select" style="max-width:320px;" onchange="handleLedgerClientChange()">
+        <option>Loading clients...</option>
+      </select>
+    </div>
+
+    <!-- Client Ledger Summary Banner -->
+    <div class="ledger-summary-banner">
+      <div class="ledger-stat-card gold">
+        <span>Current Compound Balance</span>
+        <b id="admSummaryBalance">₹0</b>
+      </div>
+      <div class="ledger-stat-card">
+        <span>Total Deposited</span>
+        <b id="admSummaryInvested">₹0</b>
+      </div>
+      <div class="ledger-stat-card green">
+        <span>Total Compounded Interest</span>
+        <b id="admSummaryInterest">₹0</b>
+      </div>
+      <div class="ledger-stat-card">
+        <span>Active Rate</span>
+        <b id="admSummaryRate">10%</b>
+      </div>
+    </div>
+
+    <!-- Excel-Format Monthly Ledger Table -->
+    <div class="ledger-excel-wrapper">
+      <table class="ledger-excel-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Added Capital</th>
+            <th>Previous Balance</th>
+            <th>Rate %</th>
+            <th>Monthly Interest</th>
+            <th>Total Balance</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminLedgerTbody">
+          <tr>
+            <td colspan="7" class="adm-empty">Select a client to view their monthly ledger</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add Ledger Entry Form Box -->
+    <div class="ledger-add-box">
+      <h5>➕ Add Monthly Compound Ledger Entry (Supports Backdated Entries &amp; Automatic Cascade)</h5>
+      <form onsubmit="handleAdminAddLedgerEntry(event)">
+        <div class="ledger-add-grid">
+          <div>
+            <label class="form-label">Entry Date (DD-MM-YYYY or YYYY-MM-DD)</label>
+            <input type="text" id="ledgerAddDate" class="form-input" placeholder="e.g. 15-02-2024" required>
+          </div>
+          <div>
+            <label class="form-label">Investment Added (₹, or 0 if pure accrual)</label>
+            <input type="number" id="ledgerAddAmount" class="form-input" placeholder="0" min="0" step="any" value="0">
+          </div>
+          <div>
+            <label class="form-label">Monthly Rate %</label>
+            <input type="number" id="ledgerAddRate" class="form-input" placeholder="10" step="0.5" value="10" required>
+          </div>
+          <div class="full-span">
+            <label class="form-label">Note / Remark</label>
+            <input type="text" id="ledgerAddNote" class="form-input" placeholder="e.g. Monthly interest credited or Second tranche investment">
+          </div>
+          <div class="full-span">
+            <button type="submit" class="btn-ledger-add-submit">
+              ⚡ Record Entry &amp; Recalculate Compounding Chain
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 3: INVESTMENTS & RATES ==================== -->
+  <div class="adm-panel" id="panel_investments">
+    <div class="toolbar">
+      <h3 style="font-size:18px; color:var(--mint);">Active Contracts &amp; Rate Modifiers</h3>
+      <button class="btn-white-pill" onclick="loadAllInvestmentsTab()">🔄 Refresh</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="adm-table">
+        <thead>
+          <tr>
+            <th>Investor</th>
+            <th>Amount</th>
+            <th>Tenure</th>
+            <th>Rate</th>
+            <th>Monthly Profit</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminInvestmentsTbody">
+          <tr>
+            <td colspan="7" class="adm-empty">Loading investments...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CLIENT INSPECTOR DRAWER ==================== -->
+<div id="admDrawer" style="display:none;" class="drawer-ov" onclick="if(event.target===this) closeClientDrawer()">
+  <div class="drawer">
+    <div class="drawer-head">
+      <div class="av lg" id="drawerAvatar">👤</div>
+      <div>
+        <h3 id="drawerClientName">Client Name</h3>
+        <small id="drawerClientEmail">client@example.com</small>
+      </div>
+      <button class="btn-back-square" onclick="closeClientDrawer()">&times;</button>
+    </div>
+
+    <div class="mini-stats">
+      <div>
+        <span style="font-size:11px; color:var(--mute);">BALANCE</span>
+        <b id="drawerBalance">₹0</b>
+      </div>
+      <div>
+        <span style="font-size:11px; color:var(--mute);">RATE</span>
+        <b id="drawerRate">10%</b>
+      </div>
+      <div>
+        <span style="font-size:11px; color:var(--mute);">PAYOUT</span>
+        <b id="drawerPayout">₹0</b>
+      </div>
+    </div>
+
+    <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+      <button class="btn-green-pill" style="text-align:center;" onclick="inspectClientLedger(state.selectedClient.email); closeClientDrawer();">
+        📊 Open Monthly Compound Ledger
+      </button>
+      <button class="btn-profile-logout" style="width:100%; justify-content:center; margin-top:20px;" onclick="deleteCurrentClient()">
+        🗑️ Delete Client Entirely
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ONBOARD CLIENT MODAL ==================== -->
+<div id="clientCreateModalOverlay" class="client-create-modal-overlay">
+  <div class="client-create-modal">
+    <div class="client-create-head">
+      <h3 style="font-size:18px; font-weight:800; color:var(--mint);">👤 Onboard New Client</h3>
+      <button class="close-btn" style="background:none; border:none; font-size:22px; color:var(--mute); cursor:pointer;" onclick="closeCreateClientModal()">&times;</button>
+    </div>
+    <div class="client-create-body">
+      <form onsubmit="handleAdminCreateClient(event)">
+        <div class="client-form-grid">
+          <div>
+            <label class="form-label">Full Name</label>
+            <input type="text" id="createClientName" class="form-input" placeholder="e.g. Amit Patel" required>
+          </div>
+          <div>
+            <label class="form-label">Email Address</label>
+            <input type="email" id="createClientEmail" class="form-input" placeholder="amit@example.com" required>
+          </div>
+          <div>
+            <label class="form-label">Temporary Password</label>
+            <input type="text" id="createClientPassword" class="form-input" value="1234">
+          </div>
+          <div>
+            <label class="form-label">Phone Number</label>
+            <input type="text" id="createClientPhone" class="form-input" placeholder="+91 98765 00000">
+          </div>
+          <div>
+            <label class="form-label">Account Start Date (Past Date Allowed)</label>
+            <input type="text" id="createClientStartDate" class="form-input" placeholder="DD-MM-YYYY (e.g. 10-01-2024)">
+          </div>
+          <div>
+            <label class="form-label">Initial Investment Amount (₹, min 500)</label>
+            <input type="number" id="createClientInitialAmount" class="form-input" placeholder="e.g. 500, 1000, 50000..." min="0" step="any" value="500">
+          </div>
+          <div>
+            <label class="form-label">Initial Monthly Rate %</label>
+            <input type="number" id="createClientInitialRate" class="form-input" placeholder="10" step="0.5" value="10">
+          </div>
+          <div class="full">
+            <label class="form-label">Client Notes &amp; Terms</label>
+            <input type="text" id="createClientNotes" class="form-input" placeholder="e.g. Onboarded with initial 10% monthly compounding contract">
+          </div>
+          <div class="full" style="margin-top:16px;">
+            <button type="submit" class="btn-green-pill" style="width:100%; padding:13px;">
+              Create Client &amp; Generate First Ledger Row
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RATE UPDATION & ROLLOVER MODAL ==================== -->
+<div id="rolloverModalOverlay" class="rollover-modal-overlay">
+  <div class="rollover-modal">
+    <div class="rollover-modal-head">
+      <h3 style="font-size:18px; font-weight:800; color:var(--gold);">📈 Update Rate &amp; Profit Rollover</h3>
+      <button class="close-btn" style="background:none; border:none; font-size:22px; color:var(--mute); cursor:pointer;" onclick="closeRolloverModal()">&times;</button>
+    </div>
+    <div class="rollover-modal-body">
+      <form onsubmit="handleRolloverSubmit(event)">
+        <div class="rollover-balance-box">
+          <div class="rollover-stat-row">
+            <span>Current Principal:</span>
+            <strong id="rolloverCurrentPrincipal">₹0</strong>
+          </div>
+        </div>
+
+        <div class="rate-update-row">
+          <div>
+            <label class="form-label">New Rate % Monthly</label>
+            <input type="number" id="rolloverNewRate" class="form-input" step="0.5" min="1" max="50" required>
+          </div>
+          <div>
+            <label class="form-label">Extend By Months</label>
+            <input type="number" id="rolloverExtensionMonths" class="form-input" value="4" min="1" max="60" required>
+          </div>
+        </div>
+
+        <label class="checkbox-toggle">
+          <input type="checkbox" id="rolloverProfitCheck" checked>
+          <span>
+            <b>Reinvest Accrued Profit Into Principal</b>
+            <small>Rolls accrued interest into the active base balance so future earnings compound on the higher sum.</small>
+          </span>
+        </label>
+
+        <div class="form-group">
+          <label class="form-label">Administrative Note</label>
+          <input type="text" id="rolloverNote" class="form-input" placeholder="e.g. Rate revised to 10% on client request">
+        </div>
+
+        <button type="submit" class="btn-green-pill" style="width:100%; margin-top:10px; background:linear-gradient(135deg, #ffd66b, #f0a21f); color:#2b1a00;">
+          Apply Rate &amp; Rollover Balance
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

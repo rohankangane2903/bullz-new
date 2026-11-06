@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}My Investment Portfolio - Bullz{% endblock %}
+
+{% block content %}
+<div class="portfolio-page-wrapper">
+  <!-- Portfolio Head Card -->
+  <div class="portfolio-head-card">
+    <div class="portfolio-head-left">
+      <div class="portfolio-avatar-chip" id="portAvatarChip">💼</div>
+      <div>
+        <div class="portfolio-title-row">
+          <h2 id="portUserName">Investor Portfolio</h2>
+          <span class="portfolio-role-tag">Active Investor</span>
+        </div>
+        <p class="portfolio-subtext" id="portUserEmail">Loading portfolio details...</p>
+      </div>
+    </div>
+    <div class="portfolio-head-actions">
+      <button class="btn-portfolio-refresh" onclick="loadPortfolioPage()">🔄 Refresh</button>
+      <button class="btn-green-pill" style="padding: 8px 18px; font-size: 13px;" onclick="openPaymentModal()">+ Invest More</button>
+      <button class="btn-white-pill" style="padding: 8px 16px; font-size: 13px;" onclick="openProfileModal()">👤 Profile</button>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Grid -->
+  <div class="portfolio-metrics-grid">
+    <div class="portfolio-kpi-card gold">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-label">Current Compound Balance</div>
+      <div class="kpi-value" id="portCurrentBalance">₹0</div>
+      <div class="kpi-note">Compounded with monthly returns</div>
+    </div>
+
+    <div class="portfolio-kpi-card blue">
+      <div class="kpi-icon">📥</div>
+      <div class="kpi-label">Total Capital Injected</div>
+      <div class="kpi-value" id="portTotalInvested">₹0</div>
+      <div class="kpi-note">Principal deposited across terms</div>
+    </div>
+
+    <div class="portfolio-kpi-card green">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-label">Net Profit Accrued</div>
+      <div class="kpi-value" id="portTotalProfit">+₹0</div>
+      <div class="kpi-note">Total earnings to date</div>
+    </div>
+
+    <div class="portfolio-kpi-card mint">
+      <div class="kpi-icon">⚡</div>
+      <div class="kpi-label">Current Return Rate</div>
+      <div class="kpi-value" id="portCurrentRate">10%</div>
+      <div class="kpi-note">Monthly compounding rate</div>
+    </div>
+  </div>
+
+  <!-- Meta Info Bar -->
+  <div class="portfolio-meta-bar">
+    <div class="meta-pill">Status: <strong style="color:var(--mint);">🟢 Running &amp; Compounding</strong></div>
+    <div class="meta-pill">Audited Entries: <strong id="portEntryCount">0</strong></div>
+    <div class="meta-pill">Database: <strong style="color:var(--mint);">MongoDB Synced</strong></div>
+  </div>
+
+  <!-- Monthly Compound Ledger Section -->
+  <div class="portfolio-section-card">
+    <div class="portfolio-section-head">
+      <div>
+        <h3>Monthly Compound Ledger (Audit Sheet)</h3>
+        <p class="portfolio-subtext">Excel-accurate monthly breakdown of capital additions, compounding interest, and balance rollover.</p>
+      </div>
+      <div>
+        <button class="btn-white-pill" onclick="exportLedgerCSV()">📥 Export to CSV</button>
+      </div>
+    </div>
+
+    <div class="portfolio-table-wrap">
+      <table class="ledger-excel-table" id="portfolioLedgerTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Added Capital</th>
+            <th>Previous Balance</th>
+            <th>Rate %</th>
+            <th>Monthly Interest</th>
+            <th>Total Balance</th>
+            <th>Notes &amp; Transactions</th>
+          </tr>
+        </thead>
+        <tbody id="portfolioLedgerTbody">
+          <tr>
+            <td colspan="7" style="text-align:center; padding:30px; color:var(--mute);">Loading your ledger...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="portfolioLedgerMobileCards"></div>
+  </div>
+</div>
+{% endblock %}

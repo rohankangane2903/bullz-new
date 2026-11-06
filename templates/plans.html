@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Investment Plans & Calculator - Bullz{% endblock %}
+
+{% block content %}
+<div class="plans-page-wrapper">
+  <div class="calculator-card">
+    <div class="calc-user-header">
+      <h2 class="calc-user-name">Investment Calculator</h2>
+      <p class="calc-user-email">Invest any custom amount (min ₹500) and lock in your monthly compounding plan</p>
+    </div>
+
+    <!-- Amount Selection -->
+    <div class="calc-amount-group">
+      <label class="calc-control-label" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Investment Principal (₹)</span>
+        <span style="color:var(--mint); font-size:12px; font-weight:700;">Starting from ₹500</span>
+      </label>
+      <input type="number" id="calcAmountInput" class="calc-input" value="500" min="500" step="any" placeholder="Enter any custom amount (min ₹500)">
+      <small style="display:block; color:var(--mute); font-size:12px; margin-top:4px;">
+        💡 You can invest any amount you want. Minimum starting investment is ₹500.
+      </small>
+    </div>
+
+    <div class="chip-row">
+      <button type="button" class="chip" onclick="setCalcAmount(500)">₹500</button>
+      <button type="button" class="chip" onclick="setCalcAmount(1000)">₹1,000</button>
+      <button type="button" class="chip" onclick="setCalcAmount(2500)">₹2,500</button>
+      <button type="button" class="chip" onclick="setCalcAmount(5000)">₹5,000</button>
+      <button type="button" class="chip" onclick="setCalcAmount(10000)">₹10,000</button>
+      <button type="button" class="chip" onclick="setCalcAmount(25000)">₹25,000</button>
+      <button type="button" class="chip" onclick="setCalcAmount(50000)">₹50,000</button>
+      <button type="button" class="chip" onclick="setCalcAmount(100000)">₹1,00,000</button>
+    </div>
+
+    <!-- Duration / Tenure -->
+    <div class="form-group">
+      <label class="calc-control-label">Select Plan Tenure</label>
+      <select id="calcTenureSelect" class="calc-select">
+        <optgroup label="Short-Term Contracts">
+          <option value="4 Month" selected>4 Months (Monthly Payout)</option>
+          <option value="6 Month">6 Months (Monthly Payout)</option>
+          <option value="8 Month">8 Months (Monthly Payout)</option>
+          <option value="10 Month">10 Months (Monthly Payout)</option>
+        </optgroup>
+        <optgroup label="Long-Term Wealth Plans">
+          <option value="1 year">1 Year (12 Months Compound)</option>
+          <option value="2 year">2 Years (24 Months Compound)</option>
+          <option value="3 year">3 Years (36 Months Compound)</option>
+          <option value="5 year">5 Years (60 Months Compound)</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <!-- Rate % Selector Chips -->
+    <div class="calc-rate-group">
+      <label class="calc-control-label">Monthly Rate Tier</label>
+      <div class="rate-chips">
+        <div class="rate-chip active" data-rate="5">
+          5%
+          <span>Standard</span>
+        </div>
+        <div class="rate-chip" data-rate="10">
+          10%
+          <span>Recommended</span>
+        </div>
+        <div class="rate-chip" data-rate="15">
+          15%
+          <span>Premium</span>
+        </div>
+        <div class="rate-chip" data-rate="20">
+          20%
+          <span>VIP Tier</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Calculation Results Pane -->
+    <div class="calc-results-pane show">
+      <div class="result-stat-line">
+        <span>Estimated Monthly Income:</span>
+        <strong id="calcMonthlyReturn" style="color:var(--mint);">₹25</strong>
+      </div>
+      <div class="result-stat-line">
+        <span>Total Earnings Over Term:</span>
+        <strong id="calcTotalReturn">₹100</strong>
+      </div>
+      <div class="result-stat-line">
+        <span>Tenure Selected:</span>
+        <strong id="calcDisplayDuration">4 Month (5% monthly)</strong>
+      </div>
+      <div class="result-stat-line">
+        <span>Total Maturity Valuation:</span>
+        <strong id="calcMaturityAmount" style="color:var(--gold);">₹600</strong>
+      </div>
+
+      <div class="result-highlight-text">
+        🔒 Principal backed by automated risk diversification &amp; real-time compound ledger tracking.
+      </div>
+
+      <button type="button" class="btn-buy-plan" onclick="openPaymentModal()">Invest In This Plan Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Plan Cards Overview -->
+<section style="padding: 20px 0 80px;">
+  <div class="container">
+    <h2 style="text-align: center; font-size: 32px; margin-bottom: 30px;">Featured Investment Plans</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <!-- Plan 1 -->
+      <div class="dashboard-metric-box">
+        <div class="metric-icon">🌱</div>
+        <div class="metric-label">Starter Flexible</div>
+        <div class="metric-value">4 Months</div>
+        <p style="color: var(--mute); font-size: 13px; margin: 10px 0 16px;">
+          Short-duration liquidity plan starting from ₹500 with 5% monthly return credited directly.
+        </p>
+        <button class="btn-green-pill" style="width: 100%; text-align: center;" onclick="document.getElementById('calcTenureSelect').value='4 Month'; initCalculator(); openPaymentModal();">
+          Choose Starter (4M)
+        </button>
+      </div>
+
+      <!-- Plan 2 -->
+      <div class="dashboard-metric-box" style="border-color: var(--em); box-shadow: 0 0 20px rgba(25,211,138,.2);">
+        <div class="metric-icon">🚀</div>
+        <div class="metric-label" style="color:var(--mint);">Most Popular</div>
+        <div class="metric-value" style="color:var(--mint);">10 Months</div>
+        <p style="color: var(--mute); font-size: 13px; margin: 10px 0 16px;">
+          High-yield contract starting from ₹500 with 10% monthly compounding capability.
+        </p>
+        <button class="btn-green-pill" style="width: 100%; text-align: center;" onclick="document.getElementById('calcTenureSelect').value='10 Month'; initCalculator(); openPaymentModal();">
+          Choose 10-Month
+        </button>
+      </div>
+
+      <!-- Plan 3 -->
+      <div class="dashboard-metric-box">
+        <div class="metric-icon">👑</div>
+        <div class="metric-label">Long-Term Growth</div>
+        <div class="metric-value" style="color:var(--gold);">1 to 5 Years</div>
+        <p style="color: var(--mute); font-size: 13px; margin: 10px 0 16px;">
+          Full compound wealth generation starting from ₹500 with monthly ledger cascading.
+        </p>
+        <button class="btn-green-pill" style="width: 100%; text-align: center; background: linear-gradient(135deg, #ffd66b, #f0a21f); color: #2b1a00;" onclick="document.getElementById('calcTenureSelect').value='1 year'; initCalculator(); openPaymentModal();">
+          Choose Long-Term
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

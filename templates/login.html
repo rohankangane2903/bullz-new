@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}User Login - Bullz Platform{% endblock %}
+
+{% block content %}
+<div class="auth-page-wrapper">
+  <div class="green-auth-card">
+    <h2 class="auth-title">User Login</h2>
+
+    <div class="auth-role-tabs">
+      <button class="auth-role-tab active" type="button">👤 Investor Login</button>
+      <a class="auth-role-tab" href="/adminlogin">🛡️ Admin Portal</a>
+    </div>
+
+    <form id="userLoginForm" onsubmit="handleUserLogin(event)">
+      <div class="auth-input-group">
+        <label class="auth-label">Email Address</label>
+        <input type="email" id="loginEmail" class="auth-input" placeholder="Enter your email" required autofocus>
+      </div>
+
+      <div class="auth-input-group">
+        <label class="auth-label">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="loginPassword" class="auth-input" placeholder="Enter password" required>
+          <button type="button" class="pw-eye" onclick="const p = document.getElementById('loginPassword'); p.type = p.type === 'password' ? 'text' : 'password';">👁️</button>
+        </div>
+      </div>
+
+      <div class="auth-meta-row">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--em);"> Remember me
+        </label>
+        <span class="forgot-link" style="cursor:pointer;" onclick="showToast('Password reset link has been dispatched to your email', 'info')">Forgot password?</span>
+      </div>
+
+      <button type="submit" class="btn-auth-submit">Sign In to Portfolio</button>
+
+      <div class="auth-footer-link">
+        Don't have an account? <a href="/signup">Sign up here</a>
+      </div>
+
+      <div class="quick-demo-accounts">
+        <div class="quick-demo-title">💡 Quick Demo Sign-in</div>
+        <div class="quick-demo-btns">
+          <button type="button" class="demo-chip" onclick="fillDemoLogin('admin@gmail.com', 'admin')">Admin Demo</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

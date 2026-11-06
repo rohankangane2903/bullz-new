@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>{% block title %}Bullz - Investment & Trading Platform{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="/static/assets/bullz-logo-128.png">
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Page Loader -->
+  <div id="pageLoader" class="loader" role="status" aria-label="Loading Bullz">
+    <div class="loader-logo-wrap">
+      <span class="loader-ring"></span>
+      <img src="/static/assets/bullz-logo-512.png" alt="Bullz" class="loader-logo">
+    </div>
+    <div class="loader-bar"><i></i></div>
+    <p class="loader-text">Growing your money…</p>
+  </div>
+
+  <!-- Background Aurora Glow -->
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a class="brand-section" href="/">
+        <img src="/static/assets/bullz-logo-128.png" alt="Bullz" class="brand-logo">
+        <span class="brand-name">Bullz</span>
+        <span class="return-badge">Return 10%</span>
+      </a>
+
+      <!-- Logged-in Greeting -->
+      <div id="navUserGreeting" class="user-greeting" style="display: none; cursor: pointer;" onclick="openProfileModal()" title="View Profile">
+        <span>Hello</span>
+        <span>👋</span>
+        <span id="navGreetingName">USER</span>
+      </div>
+
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><button class="icon-btn" id="themeBtn" aria-label="Toggle theme" onclick="toggleTheme()">🌙</button></li>
+        <li><a class="nav-link {% if page == 'home' %}active{% endif %}" href="/">Home</a></li>
+        <li><a class="nav-link" href="/#about">About</a></li>
+        <li><a class="nav-link" href="/#contact">Contact</a></li>
+        <li><a class="nav-link {% if page == 'plans' %}active{% endif %}" href="/plans">Plans</a></li>
+        <li><a class="nav-link {% if page == 'return' %}active{% endif %}" href="/return">Return</a></li>
+        
+        <li id="navPortfolioItem" style="display: none;">
+          <a class="nav-link {% if page == 'portfolio' %}active{% endif %}" href="/portfolio">💼 Portfolio</a>
+        </li>
+        
+        <!-- Admin Activity Notification Bell -->
+        <li id="navNotifItem" style="display: none;">
+          <div class="notif-wrapper">
+            <button class="notif-btn" id="navNotifBtn" title="Admin Notifications" onclick="toggleNotifDropdown(event)">
+              🔔
+              <span id="navNotifBadge" class="notif-badge" style="display: none;">0</span>
+            </button>
+            <div id="navNotifDropdown" class="notif-dropdown">
+              <div class="notif-header">
+                <h4>🔔 Activity Feed</h4>
+                <div>
+                  <button type="button" onclick="markAllNotifsRead(event)">Mark Read</button>
+                  <button type="button" onclick="clearAllNotifs(event)">Clear</button>
+                </div>
+              </div>
+              <div id="navNotifList" class="notif-list">
+                <div class="notif-empty">No notifications yet</div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Auth Actions -->
+        <li id="navUserLoginItem">
+          <a class="nav-link" href="/login">👤 User Login</a>
+        </li>
+        <li id="navAdminLoginItem">
+          <a class="login-btn" style="background: rgba(25,211,138,.16); color: var(--mint); border: 1px solid var(--em); padding: 8px 18px; font-size: 13px;" href="/adminlogin">🛡️ Admin Portal</a>
+        </li>
+        <li id="navProfileBtnItem">
+          <button id="navProfileBtn" class="user-profile-btn" style="display: none;" title="User Profile" onclick="openProfileModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Body Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>BULLZZ</h3>
+          <p>
+            Grow your money with clear plans, monthly payouts and a monthly compound ledger you can check any time. Built with Python &amp; MongoDB.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-icon-btn" title="Instagram">📷</a>
+            <a href="#" class="social-icon-btn" title="Facebook">📘</a>
+            <a href="#" class="social-icon-btn" title="Twitter">🐦</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/return">Return Model</a></li>
+            <li><a href="/portfolio">Portfolio</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/#about">About us</a></li>
+            <li><a href="/#contact">Contact us</a></li>
+            <li><a href="/api/status" target="_blank">System Status</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <ul>
+            <li><a href="/login">User Portal</a></li>
+            <li><a href="/adminlogin">Admin Center</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Payment Modal -->
+  <div id="paymentModalOverlay" class="pay-modal-overlay">
+    <div class="pay-modal">
+      <div class="pay-modal-head">
+        <h3>💳 Complete Your Investment</h3>
+        <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+      </div>
+
+      <div class="pay-summary-banner">
+        <div class="pay-summary-left">
+          <span>Selected Plan</span>
+          <strong id="payModalTenure">4 Month</strong> &bull; <small id="payModalRate" style="color:var(--mint);">5% Monthly</small>
+        </div>
+        <div class="pay-summary-amount" id="payModalAmount">₹500</div>
+      </div>
+
+      <!-- Investment Amount Input in Modal -->
+      <div style="padding: 14px 24px 0;">
+        <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Investment Amount (₹)</span>
+          <span style="color:var(--mint); font-size:12px; font-weight:700;">Starting from ₹500</span>
+        </label>
+        <input type="number" id="payModalAmountInput" class="form-input" min="500" step="any" placeholder="Enter any custom amount (min ₹500)" oninput="handlePayModalAmountInput(this.value)">
+        <div class="chip-row" style="margin: 8px 0 0; gap: 6px;">
+          <button type="button" class="chip" onclick="setPayModalAmount(500)">₹500</button>
+          <button type="button" class="chip" onclick="setPayModalAmount(1000)">₹1,000</button>
+          <button type="button" class="chip" onclick="setPayModalAmount(2500)">₹2,500</button>
+          <button type="button" class="chip" onclick="setPayModalAmount(5000)">₹5,000</button>
+          <button type="button" class="chip" onclick="setPayModalAmount(10000)">₹10,000</button>
+          <button type="button" class="chip" onclick="setPayModalAmount(25000)">₹25,000</button>
+          <button type="button" class="chip" onclick="setPayModalAmount(50000)">₹50,000</button>
+        </div>
+      </div>
+
+      <div class="pay-tabs">
+        <button class="pay-tab active" id="payTab_upi" onclick="switchPayTab('upi')">📲 UPI / QR</button>
+        <button class="pay-tab" id="payTab_card" onclick="switchPayTab('card')">💳 Card</button>
+        <button class="pay-tab" id="payTab_net" onclick="switchPayTab('net')">🏛️ NetBanking</button>
+        <button class="pay-tab" id="payTab_sim" onclick="switchPayTab('sim')">⚡ Quick Test</button>
+      </div>
+
+      <!-- UPI Tab -->
+      <div class="pay-tab-content active" id="payContent_upi">
+        <div class="upi-qr-box">
+          <img src="/static/assets/bullz-logo-128.png" alt="Scan QR" class="upi-qr-img" style="object-fit:contain; background:#04130f;">
+          <p style="font-size:13px; color:var(--mint); font-weight:700;">bullz.invest@okaxis</p>
+          <div class="upi-apps-row">
+            <span class="upi-chip">GPay</span>
+            <span class="upi-chip">PhonePe</span>
+            <span class="upi-chip">Paytm</span>
+          </div>
+        </div>
+        <button class="btn-complete-pay" onclick="executePayment('UPI')">Verify &amp; Confirm UPI Payment</button>
+      </div>
+
+      <!-- Card Tab -->
+      <div class="pay-tab-content" id="payContent_card">
+        <div class="card-inputs-grid">
+          <div class="full-col">
+            <label class="form-label">Card Number</label>
+            <input type="text" class="form-input" placeholder="4242 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242" value="4532 8900 1234 5678">
+          </div>
+          <div>
+            <label class="form-label">Expiry (MM/YY)</label>
+            <input type="text" class="form-input" placeholder="12/28" value="10/28">
+          </div>
+          <div>
+            <label class="form-label">CVV</label>
+            <input type="password" class="form-input" placeholder="&bull;&bull;&bull;" value="888">
+          </div>
+        </div>
+        <button class="btn-complete-pay" onclick="executePayment('CreditCard')">Pay Now with Card</button>
+      </div>
+
+      <!-- NetBanking Tab -->
+      <div class="pay-tab-content" id="payContent_net">
+        <label class="form-label">Select Your Bank</label>
+        <select class="form-input" style="margin-bottom:16px;">
+          <option>HDFC Bank</option>
+          <option>State Bank of India</option>
+          <option>ICICI Bank</option>
+          <option>Axis Bank</option>
+          <option>Kotak Mahindra</option>
+        </select>
+        <button class="btn-complete-pay" onclick="executePayment('NetBanking')">Proceed via NetBanking</button>
+      </div>
+
+      <!-- Test Sim Tab -->
+      <div class="pay-tab-content" id="payContent_sim">
+        <div class="test-sandbox-card">
+          <h4>🧪 Instant Sandbox Simulation</h4>
+          <p>Simulates real bank gateway webhook settlement and activates your contract immediately in MongoDB.</p>
+        </div>
+        <button class="btn-complete-pay" onclick="executePayment('Simulation')">Instant Test Approval &amp; Activate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModalOverlay" class="profile-modal-overlay">
+    <div class="profile-modal">
+      <div class="profile-modal-head">
+        <h3 style="font-size:18px; font-weight:800;">👤 Account Profile</h3>
+        <button class="close-btn" style="background:none; border:none; font-size:20px; color:var(--mute); cursor:pointer;" onclick="closeProfileModal()">&times;</button>
+      </div>
+      <div class="profile-modal-body">
+        <form onsubmit="handleProfileUpdate(event)">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="profileModalName" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address (Read-Only)</label>
+            <input type="email" id="profileModalEmail" class="form-input" disabled style="opacity:.65;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" id="profileModalPhone" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Change Password (leave empty to keep current)</label>
+            <input type="password" id="profileModalPassword" class="form-input" placeholder="New Password">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+            <button type="button" class="btn-profile-logout" onclick="logout()">Log Out</button>
+            <button type="submit" class="btn-profile-update">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Toast -->
+  <div id="bullzToast" class="custom-alert-toast"></div>
+
+  <script src="/static/js/app.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

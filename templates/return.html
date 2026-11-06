@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Return Philosophy & Compounding Model - Bullz{% endblock %}
+
+{% block content %}
+<div class="return-page-wrapper">
+  <div class="return-title-row">
+    <a href="/" class="btn-back-square">←</a>
+    <h1 class="return-page-title">Return Philosophy &amp; Compounding</h1>
+  </div>
+
+  <div class="user-dashboard-card" style="margin-bottom: 24px;">
+    <h2 style="font-size: 26px; margin-bottom: 12px; color: var(--mint);">How Bullz Delivers Consistent Returns</h2>
+    <p style="color: var(--mute); font-size: 15px; margin-bottom: 20px;">
+      Bullz leverages quantitative market positioning, quantitative algorithmic swing strategies, and strict risk control parameters (Modern Portfolio Theory) to capture steady market spreads while hedging downside volatility.
+    </p>
+
+    <div class="dashboard-metrics-grid">
+      <div class="dashboard-metric-box">
+        <div class="metric-icon">📈</div>
+        <div class="metric-value">10%</div>
+        <div class="metric-label">Benchmark Monthly Compounding</div>
+      </div>
+      <div class="dashboard-metric-box">
+        <div class="metric-icon">🛡️</div>
+        <div class="metric-value">0%</div>
+        <div class="metric-label">Client Principal Exposure</div>
+      </div>
+      <div class="dashboard-metric-box">
+        <div class="metric-icon">📊</div>
+        <div class="metric-value">100%</div>
+        <div class="metric-label">MongoDB Real-Time Ledger Sync</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compounding Ledger Table Explanation -->
+  <div class="user-dashboard-card">
+    <h3 style="font-size: 20px; margin-bottom: 14px;">The Compound Ledger Formula</h3>
+    <p style="color: var(--mute); font-size: 14px; margin-bottom: 16px;">
+      Every client account maintains an exact monthly audit trail. Each month's interest is calculated on top of your previous closing balance plus any newly injected capital:
+    </p>
+
+    <div style="background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 16px; padding: 18px 24px; font-family: monospace; font-size: 15px; color: var(--mint); margin-bottom: 24px;">
+      Base = Previous Balance + Added Capital<br>
+      Monthly Interest = Base &times; (Rate % / 100)<br>
+      Total Balance = Base + Monthly Interest
+    </div>
+
+    <div class="table-responsive">
+      <table class="ledger-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Added Capital</th>
+            <th>Starting Balance</th>
+            <th>Rate</th>
+            <th>Earned Interest</th>
+            <th>Closing Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Month 1</td>
+            <td>₹1,00,000</td>
+            <td>₹0</td>
+            <td><span class="badge-rate r10">10%</span></td>
+            <td>+₹10,000</td>
+            <td><strong style="color:var(--gold);">₹1,10,000</strong></td>
+          </tr>
+          <tr>
+            <td>Month 2</td>
+            <td>₹0</td>
+            <td>₹1,10,000</td>
+            <td><span class="badge-rate r10">10%</span></td>
+            <td>+₹11,000</td>
+            <td><strong style="color:var(--gold);">₹1,21,000</strong></td>
+          </tr>
+          <tr>
+            <td>Month 3</td>
+            <td>₹0</td>
+            <td>₹1,21,000</td>
+            <td><span class="badge-rate r10">10%</span></td>
+            <td>+₹12,100</td>
+            <td><strong style="color:var(--gold);">₹1,33,100</strong></td>
+          </tr>
+          <tr>
+            <td>Month 4</td>
+            <td>₹50,000</td>
+            <td>₹1,33,100</td>
+            <td><span class="badge-rate r10">10%</span></td>
+            <td>+₹18,310</td>
+            <td><strong style="color:var(--gold);">₹2,01,410</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align: center; margin-top: 26px;">
+      <a class="btn-green-pill" href="/plans">Calculate &amp; Start Your Plan</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Create an Account - Bullz{% endblock %}
+
+{% block content %}
+<div class="auth-page-wrapper">
+  <div class="green-auth-card">
+    <h2 class="auth-title">Create Account</h2>
+    <p style="text-align: center; color: var(--mute); font-size: 14px; margin-bottom: 20px;">
+      Join Bullz to access high-yield monthly compounding investments.
+    </p>
+
+    <form id="signupForm" onsubmit="handleSignup(event)">
+      <div class="auth-input-group">
+        <label class="auth-label">Full Name</label>
+        <input type="text" id="signupName" class="auth-input" placeholder="e.g. Rahul Sharma" required autofocus>
+      </div>
+
+      <div class="auth-input-group">
+        <label class="auth-label">Email Address</label>
+        <input type="email" id="signupEmail" class="auth-input" placeholder="name@example.com" required>
+      </div>
+
+      <div class="auth-input-group">
+        <label class="auth-label">Phone Number</label>
+        <input type="tel" id="signupPhone" class="auth-input" placeholder="+91 98765 43210">
+      </div>
+
+      <div class="auth-input-group">
+        <label class="auth-label">Password</label>
+        <input type="password" id="signupPassword" class="auth-input" placeholder="Create strong password" required>
+      </div>
+
+      <div class="auth-input-group">
+        <label class="auth-label">Confirm Password</label>
+        <input type="password" id="signupConfirm" class="auth-input" placeholder="Re-enter password" required>
+      </div>
+
+      <button type="submit" class="btn-auth-submit">Create My Account</button>
+
+      <div class="auth-footer-link">
+        Already have an account? <a href="/login">Sign in</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
