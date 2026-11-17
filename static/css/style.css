@@ -350,3 +350,13 @@ section{padding:72px 0}
 .portfolio-table-wrap{display:block;overflow-x:auto;border-radius:16px;border:1px solid var(--line)}
 #portfolioLedgerMobileCards{display:none}
 @media(max-width:768px){.portfolio-table-wrap{display:none}#portfolioLedgerMobileCards{display:flex;flex-direction:column;gap:10px;margin-top:4px}}
+
+/* Drawer Overlay & Inspector */
+.drawer-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:95;display:none;align-items:center;justify-content:flex-end;animation:in .3s ease}
+.drawer-ov.open{display:flex}
+.drawer{width:100%;max-width:440px;height:100%;background:rgba(7,26,20,.98);border-left:1px solid var(--line);padding:26px;display:flex;flex-direction:column;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.5)}
+.drawer-head{display:flex;align-items:center;gap:14px;padding-bottom:20px;border-bottom:1px solid var(--line);position:relative}
+.drawer-head .btn-back-square{margin-left:auto;background:none;border:none;font-size:26px;color:var(--mute);cursor:pointer}
+.drawer-head .btn-back-square:hover{color:var(--mint)}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;background:var(--glass2);padding:14px;border-radius:16px;border:1px solid var(--line)}
+.mini-stats b{display:block;font-size:16px;color:var(--gold);margin-top:4px}

@@ -49,10 +49,12 @@ def list_clients():
         running_invs = [i for i in user_invs if i.get("status") == "Running"]
         monthly_payout = sum(float(i.get("monthlyProfit", 0)) for i in running_invs) or round(total_amount * (rate_num / 100.0))
 
+        client_name = (u.get("name") or "").strip() or "Investor"
+
         clients_data.append({
             "id": u_id,
             "_id": u_id,
-            "name": u.get("name", "Investor"),
+            "name": client_name,
             "email": u.get("email"),
             "phone": u.get("phone", ""),
             "role": u.get("role", "user"),

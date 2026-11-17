@@ -46,6 +46,7 @@ def add_entry(req: LedgerEntryCreate):
 
 @router.put("/{entry_id}")
 def update_entry(entry_id: str, req: LedgerEntryUpdate):
+    from app.database import db_manager
     ok = update_ledger_entry(entry_id, {
         "entryDate": req.entryDate,
         "investmentAdded": req.investmentAdded,
@@ -55,8 +56,14 @@ def update_entry(entry_id: str, req: LedgerEntryUpdate):
     if not ok:
         raise HTTPException(status_code=404, detail="Ledger entry not found")
 
-    entries = get_user_ledger(req.userEmail) if req.userEmail else []
-    summary = get_ledger_summary(req.userEmail) if req.userEmail else None
+    email = req.userEmail
+    if not email:
+        entry = next((item for item in db_manager.mem_store["monthly_ledgers"] if str(item.get("_id")) == str(entry_id)), None)
+        if entry:
+            email = entry.get("userEmail")
+
+    entries = get_user_ledger(email) if email else []
+    summary = get_ledger_summary(email) if email else None
     return {
         "success": True,
         "message": "Ledger entry updated & recalculated",
