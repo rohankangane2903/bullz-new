@@ -7,6 +7,8 @@ from pymongo.errors import PyMongoError, ServerSelectionTimeoutError
 import bcrypt
 
 from app.config import (
+    BASE_DIR,
+    IS_VERCEL,
     MONGODB_URI,
     MONGODB_DB_NAME,
     ADMIN_NAME,
@@ -49,13 +51,18 @@ class DatabaseManager:
 
     def load_disk_store(self):
         try:
-            if DATA_FILE.exists():
-                with open(DATA_FILE, "r", encoding="utf-8") as f:
+            source_file = DATA_FILE
+            if not source_file.exists():
+                seed_file = BASE_DIR / "data" / "bullz_store.json"
+                if seed_file.exists():
+                    source_file = seed_file
+            if source_file.exists():
+                with open(source_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     for key in ["users", "investments", "monthly_ledgers", "notifications", "payments"]:
                         if key in data and isinstance(data[key], list):
                             self.mem_store[key] = data[key]
-                logger.info(f"Loaded disk store: {len(self.mem_store['users'])} users, {len(self.mem_store['monthly_ledgers'])} ledger rows.")
+                logger.info(f"Loaded disk store from {source_file}: {len(self.mem_store['users'])} users, {len(self.mem_store['monthly_ledgers'])} ledger rows.")
         except Exception as e:
             logger.warning(f"Could not load disk fallback store: {e}")
 
@@ -93,6 +100,12 @@ class DatabaseManager:
             self.save_disk_store()
 
     def connect(self) -> bool:
+        # On Vercel, don't attempt connecting to localhost/127.0.0.1
+        if IS_VERCEL and ("127.0.0.1" in MONGODB_URI or "localhost" in MONGODB_URI):
+            self.is_connected = False
+            logger.info("Local MongoDB URI on Vercel Serverless. Seamless local persistent store is active (set MONGODB_URI to MongoDB Atlas in Vercel environment variables to connect to Atlas cloud database).")
+            return False
+
         try:
             self.client = pymongo.MongoClient(MONGODB_URI, serverSelectionTimeoutMS=2000)
             self.client.server_info() # verify connection

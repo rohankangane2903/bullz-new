@@ -1,9 +1,13 @@
+from pathlib import Path
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 from app.config import BASE_DIR
 from app.database import db_manager
 
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates_path = BASE_DIR / "templates"
+if not templates_path.exists():
+    templates_path = Path("templates")
+templates = Jinja2Templates(directory=str(templates_path))
 router = APIRouter(tags=["views"])
 
 @router.get("/")

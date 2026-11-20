@@ -1,3 +1,4 @@
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +28,11 @@ app.add_middleware(
 )
 
 # Mount Static Files (CSS, JS, Assets)
-app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+static_path = BASE_DIR / "static"
+if not static_path.exists():
+    static_path = Path("static")
+if static_path.exists():
+    app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
 
 # Include Routers
 app.include_router(views_router)
